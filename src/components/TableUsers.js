@@ -3,6 +3,9 @@ import Container from 'react-bootstrap/Container';
 import { useEffect, useState } from 'react';
 import { fetchAllUser } from '../services/UserService';
 import ReactPaginate from 'react-paginate';
+import ModalAddNew from './ModalAddNew';
+import ModalEditUser from './ModalEditUser';
+
 
 const TableUsers = (props)=>{
     
@@ -10,11 +13,24 @@ const TableUsers = (props)=>{
     const [totalUser,settotalUser] = useState(0);
     const [totalPage,settotalPage] = useState(0);
     const [page,setPage] = useState(1);
+    const [showAddModal,setShowAddModal] = useState(false)
+    const [showEditModal,setshowEditModal] = useState(false)
+    const [dataUserEdit,setDataUserEdit] = useState({})
+
 
     useEffect(()=>{
         // call api
         getUsers(page)
     },[page])
+
+    const handleUpdateTable = (user)=>{
+        setListUser((prevListUser) => [user, ...prevListUser])
+    }
+
+    const handleEditUser=(user)=>{
+        setDataUserEdit(user)
+        setshowEditModal(true)
+    }
 
     const getUsers = async (pageNumber)=> {
         let res = await fetchAllUser(pageNumber);
@@ -32,23 +48,34 @@ const TableUsers = (props)=>{
     
     return(<>
     <Container>
+        <div className=' my-3 add-new'>
+            <span><b>List user: </b> </span>
+            <button className='btn btn-light' onClick={()=>{setShowAddModal(true)}}>Add user</button>
+        </div>
         <Table striped bordered hover>
             <thead>
                 <tr>
-                <th>id</th>
-                <th>Email</th>
-                <th>First Name</th>
-                <th>Last Name</th>
+                    <th>id</th>
+                    <th>Email</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
             {
-                listUser.map((user)=>(
+                listUser && listUser.length>0 && listUser.map((user)=>(
                     <tr key={user.id}>
                         <td>{user.id}</td>
                         <td>{user.email}</td>
                         <td>{user.first_name}</td>
                         <td>{user.last_name}</td>
+                        <td>
+                            <button 
+                                className='btn btn-primary mx-2' 
+                                onClick={()=>handleEditUser(user)}>Edit</button>
+                            <button className='btn btn-danger'>Delete</button>
+                        </td>
                     </tr>
                 ))
             }
@@ -73,9 +100,17 @@ const TableUsers = (props)=>{
         containerClassName="pagination"
         activeClassName="active"
         renderOnZeroPageCount={null}
-        
-    
-      />
+        />
+        <ModalAddNew 
+            show={showAddModal}
+            handleClose={()=>{setShowAddModal(false)}}
+            handleUpdateTable={handleUpdateTable}
+        />
+        <ModalEditUser 
+            show={showEditModal}
+            handleClose={()=>{setshowEditModal(false)}}
+            dataUserEdit={dataUserEdit}
+        />
     </Container>
     </>)
 }

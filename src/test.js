@@ -1,10 +1,16 @@
-import React from "react"
+import { memo } from "react";
 
-const reactElement = React.createElement(
-    'h1',
-    {
-        title: 'Hello',
-        className:'h1-class'
-    },
-    'Hello anh em!'
-)
+const Todos = ({ todos }) => {
+  console.log("child render");
+  return (
+    <>
+      <h2>My Todos</h2>
+      {todos.map((todo, index) => {
+        return <p key={index}>{todo}</p>;
+      })}
+    </>
+  );
+};
+
+export default memo(Todos);
+
