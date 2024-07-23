@@ -11,4 +11,8 @@ const postCreateUser = (name,job)=>{
     return axios.post("/api/user",{name,job})
 }
 
-export { fetchAllUser, postCreateUser}
+const putUpdateUser = (name,job)=>{
+    return axios.put("/api/user/2",{name,job})
+}
+
+export { fetchAllUser, postCreateUser, putUpdateUser}

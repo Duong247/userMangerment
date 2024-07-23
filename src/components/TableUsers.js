@@ -32,6 +32,15 @@ const TableUsers = (props)=>{
         setshowEditModal(true)
     }
 
+    const handleEditUserFromModal = (user)=>{
+        console.log(user);
+        listUser.map((item)=>{
+            if (item.id === user.id){
+                item.first_name = user.first_name
+            }
+        })
+    }
+
     const getUsers = async (pageNumber)=> {
         let res = await fetchAllUser(pageNumber);
         
@@ -110,6 +119,7 @@ const TableUsers = (props)=>{
             show={showEditModal}
             handleClose={()=>{setshowEditModal(false)}}
             dataUserEdit={dataUserEdit}
+            handleEditUserFromModal={handleEditUserFromModal}
         />
     </Container>
     </>)
