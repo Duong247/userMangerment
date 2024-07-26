@@ -93,9 +93,9 @@ const TableUsers = (props)=>{
                         <span>id</span>
                         <span>
                             <i className="fa-solid fa-arrow-up-long"
-                               onClick={()=>handleSort('asc','id')} ></i>
-                            <i className="fa-solid fa-arrow-down-long"
                                onClick={()=>handleSort('desc','id')} ></i>
+                            <i className="fa-solid fa-arrow-down-long"
+                               onClick={()=>handleSort('asc','id')} ></i>
                         </span>
                     </div>
                     </th>
@@ -105,9 +105,9 @@ const TableUsers = (props)=>{
                             <span>First Name</span>
                             <span>
                             <i className="fa-solid fa-arrow-up-long"
-                               onClick={()=>handleSort('asc','first_name')} ></i>
-                            <i className="fa-solid fa-arrow-down-long"
                                onClick={()=>handleSort('desc','first_name')} ></i>
+                            <i className="fa-solid fa-arrow-down-long"
+                               onClick={()=>handleSort('asc','first_name')} ></i>
                             </span>
                         </div>
                     </th>
