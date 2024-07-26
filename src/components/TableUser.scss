@@ -1,0 +1,15 @@
+
+.sort-header{
+    display: flex;
+    justify-content: space-between;
+  
+    i{
+      cursor: pointer;
+      padding: 10px 2px;
+    }
+    i:hover{
+      opacity: 0.5;
+    }
+
+    
+  }

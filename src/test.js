@@ -1,16 +1,19 @@
-import { memo } from "react";
 
-const Todos = ({ todos }) => {
-  console.log("child render");
+
+import {UserContext} from './Component1'
+import { useContext } from "react";
+
+function Component2() {
+  const user = useContext(UserContext);
+
   return (
     <>
-      <h2>My Todos</h2>
-      {todos.map((todo, index) => {
-        return <p key={index}>{todo}</p>;
-      })}
+      <h1>Component 2</h1>
+      <h2>{`Hello ${user} again!`}</h2>
     </>
   );
-};
+}
 
-export default memo(Todos);
+
+export default Component2
 
