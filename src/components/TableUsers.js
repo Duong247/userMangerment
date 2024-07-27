@@ -6,7 +6,7 @@ import ReactPaginate from 'react-paginate';
 import ModalAddNew from './ModalAddNew';
 import ModalEditUser from './ModalEditUser';
 import ModalConfirm from './ModalConfirm';
-import _ from 'lodash';
+import _, { debounce, values } from 'lodash';
 import './TableUser.scss'
 
 
@@ -60,11 +60,23 @@ const TableUsers = (props)=>{
     const handleSort=(sortBy,sortField)=>{
         setSortBy(sortBy)
         setsortField(sortField)
-
         let cloneListUser = _.cloneDeep(listUser)
         cloneListUser=_.orderBy(cloneListUser,[sortField],[sortBy])
         setListUser(cloneListUser)
     }
+
+    const handleFilter =debounce((e)=>{
+        let cloneListUser = _.cloneDeep(listUser)
+        let temp = e.target.value
+        let filterListUser = cloneListUser.filter(user=>user.email.includes(temp))
+        console.log('render');
+        if(temp){
+            setListUser(filterListUser);
+        }else{
+            getUsers(1)
+        }
+    },500)
+
 
     const getUsers = async (pageNumber)=> {
         let res = await fetchAllUser(pageNumber);
@@ -79,11 +91,20 @@ const TableUsers = (props)=>{
     const handlePageClick=(event)=>{
         setPage(+event.selected+1)
     }
+
     return(<>
     <Container>
         <div className=' my-3 add-new'>
             <span><b>List user: </b> </span>
-            <button className='btn btn-light' onClick={()=>{setShowAddModal(true)}}>Add user</button>
+            <button className='btn btn-success' onClick={()=>{setShowAddModal(true)}}>Add user</button>
+        </div>
+        <div>
+            <b>Filter by email</b>
+            <input type="text" 
+                   placeholder='input your email' 
+                   className='mb-3 mx-2' 
+                   id="filter-input"
+                   onChange={(e)=>handleFilter(e)} />
         </div>
         <Table striped bordered hover>
             <thead>
