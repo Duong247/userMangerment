@@ -1,19 +1,16 @@
+import style from './test.modules.css'
 
 
-import {UserContext} from './Component1'
-import { useContext } from "react";
+import './my-sass.scss';
 
-function Component2() {
-  const user = useContext(UserContext);
-
+const Header = () => {
   return (
     <>
-      <h1>Component 2</h1>
-      <h2>{`Hello ${user} again!`}</h2>
+      <h1 style={style.bigblue}>Hello Style!</h1>
+      <p>Add a little style!</p>
     </>
   );
 }
 
-
-export default Component2
+export default Header
 

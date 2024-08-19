@@ -6,9 +6,11 @@ import ReactPaginate from 'react-paginate';
 import ModalAddNew from './ModalAddNew';
 import ModalEditUser from './ModalEditUser';
 import ModalConfirm from './ModalConfirm';
-import _, { debounce, values } from 'lodash';
+import _, { debounce } from 'lodash';
 import './TableUser.scss'
-
+import { CSVDownload,CSVLink } from 'react-csv';
+import Papa from "papaparse"
+import { toast } from 'react-toastify';
 
 const TableUsers = (props)=>{
     
@@ -22,6 +24,8 @@ const TableUsers = (props)=>{
     const [dataUserEdit,setDataUserEdit] = useState({})
     const [sortBy,setSortBy] = useState('asc')
     const [sortField,setsortField] = useState('id')
+    const [dataExport,setDataExport] = useState([])
+
 
     useEffect(()=>{
         // call api
@@ -92,11 +96,97 @@ const TableUsers = (props)=>{
         setPage(+event.selected+1)
     }
 
-    return(<>
+    const getUserExport=(event,done)=>{
+        let result = [];
+        if(listUser && listUser.length>0){
+            result.push(["Id","Email","First name", "Last name"])
+            listUser.map((item,index)=>{    
+                let arr =[];
+                arr[0]= item.id
+                arr[1]= item.email
+                arr[2]= item.first_name
+                arr[3]= item.last_name
+                result.push(arr)
+            })
+            setDataExport(result)
+            done()
+            
+        }
+    }
+    
+    const handleImportCSV =(e)=>{
+        if (e.target && e.target.files &&e.target.files[0] ){
+            let file = e.target.files[0];
+            if (file.type !== "text/csv"){
+                toast.error("only accept csv file")
+                return;
+            }
+            // toast.success("imported data")
+            // Parse local CSV file
+            Papa.parse(file, {
+                // header:true,
+                complete: function(results) {
+                    let rawCSV = results.data                    
+                    if(rawCSV.length && rawCSV[0].length == 3){
+                        if( rawCSV[0][0] !== "email" || rawCSV[0][1] !== "first_name" || rawCSV[0][2] !== "last_name" ){
+                            toast.error("wrong format header");
+                        }else{
+                            let result = [];
+
+                            rawCSV.map((item,index)=>{
+                                if(index > 0 && item.length ==3){
+                                    let obj={};
+                                    obj.email= item[0];
+                                    obj.first_name= item[1];
+                                    obj.last_name= item[2];
+                                    result.push(obj)
+                                }
+                            })
+                            // console.log("hehe",result);
+                            setListUser(result)
+                            toast.success("datas were imported")
+                        }
+                    }else{
+                        toast.error("wrong format ")
+                    }
+                }
+            });
+
+        }else{
+            toast.error('err')
+        }
+    }
+
+    return(
+    <>
     <Container>
         <div className=' my-3 add-new'>
             <span><b>List user: </b> </span>
-            <button className='btn btn-success' onClick={()=>{setShowAddModal(true)}}>Add user</button>
+            <div>
+                <input 
+                    id='import-csv-input' 
+                    hidden type="file"
+                    onChange={(e)=>handleImportCSV(e)} />
+                <button className="btn btn-warning me-2">
+                    <label htmlFor="import-csv-input">
+                        <i className="me-2 fa-solid fa-file-import"></i>
+                        import CSV file
+                    </label> 
+                </button>
+                {dataExport &&(
+                <CSVLink data={dataExport}
+                         filename='users.csv'
+                         className='btn me-2 btn-primary'
+                         target='blank'
+                         asyncOnClick={true}
+                         onClick={getUserExport}
+                         >
+                         <i className="fa-solid me-2 fa-file-export"></i>
+                         Export to CSV</CSVLink>)}
+                <button className='btn btn-success' onClick={()=>{setShowAddModal(true)}}> 
+                <i className="fa-solid me-2 fa-circle-plus"></i>
+                Add user</button>
+            </div>
         </div>
         <div>
             <b>Filter by email</b>

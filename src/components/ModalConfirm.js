@@ -32,7 +32,7 @@ function ModalConfirm(props){
         </Modal.Header>
         <Modal.Body>
         <div className='body-add-new'>
-            This user <b>{dataDeleteUser.email}</b> will be delete
+            This user <b>{dataDeleteUser.email|| dataDeleteUser.first_name}</b> will be delete
         </div>
         
         </Modal.Body>
