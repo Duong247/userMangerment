@@ -121,7 +121,6 @@ const TableUsers = (props)=>{
                 toast.error("only accept csv file")
                 return;
             }
-            // toast.success("imported data")
             // Parse local CSV file
             Papa.parse(file, {
                 // header:true,
